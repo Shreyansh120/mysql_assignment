@@ -1,0 +1,68 @@
+Assignment-1 --- Create two tables: EmployeeDetails and EmployeeSalary.
+
+Columns for EmployeeDetails: EmpId FullName ManagerId DateOfJoining City && Columns for EmployeeSalary: : EmpId Project Salary Variable
+mysql>CREATE TABLE EmployeeDetails (
+    EmpId INT PRIMARY KEY,
+    FullName VARCHAR(255) NOT NULL,
+    ManagerId INT,
+    DateOfJoining DATE,
+    City VARCHAR(255)
+);
+
+CREATE TABLE EmployeeSalary (
+    EmpId INT,
+    Project VARCHAR(255),
+    Salary DECIMAL(10, 2),
+    Variable DECIMAL(10, 2),
+    FOREIGN KEY (EmpId) REFERENCES EmployeeDetails(EmpId)
+);
+
+
+1.SQL Query to fetch records that are present in one table but not in another table.
+
+mysql> SELECT EmpId FROM EmployeeDetails WHERE EmpId NOT IN (SELECT EmpId FROM EmployeeSalary);
+
+
+2.SQL query to fetch all the employees who are not working on any project.
+
+mysql>SELECT ed.FullName FROM EmployeeDetails ed LEFT JOIN EmployeeSalary es ON ed.EmpId = es.EmpId WHERE es.EmpId IS NULL;
+
+
+3.SQL query to fetch all the Employees from EmployeeDetails who joined in the Year 2020.
+
+mysql>SELECT * FROM EmployeeDetails WHERE YEAR(DateOfJoining) = 2020;
+
+
+4.Fetch all employees from EmployeeDetails who have a salary record in EmployeeSalary.
+
+mysql>SELECT ed.FullName FROM EmployeeDetails ed INNER JOIN EmployeeSalary es ON ed.EmpId = es.EmpId;
+
+
+5.Write an SQL query to fetch a project-wise count of employees.
+
+mysql>SELECT Project, COUNT(EmpId) as EmployeeCount FROM EmployeeSalary GROUP BY Project;
+
+
+6.Fetch employee names and salaries even if the salary value is not present for the employee.
+
+mysql>SELECT ed.FullName, IFNULL(es.Salary, 0) as Salary FROM EmployeeDetails ed LEFT JOIN EmployeeSalary es ON ed.EmpId = es.EmpId;
+
+
+7.Write an SQL query to fetch all the Employees who are also managers.
+
+mysql>SELECT ed.FullName FROM EmployeeDetails ed INNER JOIN EmployeeDetails ed2 ON ed.EmpId = ed2.ManagerId;
+
+
+8.Write an SQL query to fetch duplicate records from EmployeeDetails.
+
+mysql>SELECT ed.EmpId, ed.FullName FROM EmployeeDetails ed INNER JOIN (SELECT EmpId, COUNT(*) as count FROM EmployeeDetails GROUP BY EmpIdHAVING COUNT(*) > 1) ed2 ON ed.EmpId = ed2.EmpId;
+
+
+9.Write an SQL query to fetch only odd rows from the table.
+
+mysql>SELECT * FROM EmployeeDetails WHERE EmpId % 2 = 1;
+
+
+10.Write a query to find the 3rd highest salary from a table without top or limit keyword.
+
+mysql>SELECT DISTINCT SalaryFROM EmployeeSalary es1WHERE 3 = (SELECT COUNT(DISTINCT Salary)FROM EmployeeSalary es2WHERE es2.Salary > es1.Salary)ORDER BY Salary DESC;
